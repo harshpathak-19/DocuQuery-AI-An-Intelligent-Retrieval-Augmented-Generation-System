@@ -5,14 +5,14 @@ import os
 
 from langchain_community.vectorstores import FAISS
 from langchain_community.embeddings import HuggingFaceEmbeddings
-from langchain_groq import ChatGroq                         # ✅ Changed
+from langchain_groq import ChatGroq                         
 from langchain_core.prompts import PromptTemplate
 from langchain_classic.chains.question_answering import load_qa_chain
 from dotenv import load_dotenv
 
 load_dotenv()
 
-# Removed genai lines ✅
+
 
 hf_embeddings = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
 
@@ -44,7 +44,7 @@ def get_conversational_chain():
 
     Answer:
     """
-    model = ChatGroq(model="llama-3.3-70b-versatile", api_key=os.getenv("GROQ_API_KEY"), temperature=0.3)  # ✅ Changed
+    model = ChatGroq(model="llama-3.3-70b-versatile", api_key=os.getenv("GROQ_API_KEY"), temperature=0.3)  
     prompt = PromptTemplate(template=prompt_template, input_variables=["context", "question"])
     chain = load_qa_chain(model, chain_type="stuff", prompt=prompt)
     return chain
