@@ -216,11 +216,7 @@ Create a `.env` file in the root directory:
 
 ```env
 
-GROQ\_API\_KEY=your\_groq\_api\_key\_here
-
-```
-
-> Get your free Groq API key at → https://console.groq.com/keys
+GROQ\_API\_KEY
 
 
 
