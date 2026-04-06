@@ -22,7 +22,7 @@
 
 
 
-\## 📌 Overview
+Overview
 
 
 
@@ -34,23 +34,23 @@
 
 
 
-\## ✨ Features
+ Features
 
 
 
-\- 📄 \*\*PDF Document Ingestion\*\* — Upload any PDF and extract its content automatically
+ \*\*PDF Document Ingestion\*\* — Upload any PDF and extract its content automatically
 
-\- 🔍 \*\*Semantic Search\*\* — Uses FAISS vector store for fast and accurate similarity search
+ \*\*Semantic Search\*\* — Uses FAISS vector store for fast and accurate similarity search
 
-\- 🧠 \*\*RAG Pipeline\*\* — Combines retrieval with LLM generation for grounded, accurate answers
+ \*\*RAG Pipeline\*\* — Combines retrieval with LLM generation for grounded, accurate answers
 
-\- ⚡ \*\*Groq-Powered LLM\*\* — Ultra-fast inference using Groq's API
+ \*\*Groq-Powered LLM\*\* — Ultra-fast inference using Groq's API
 
-\- 🦜 \*\*LangChain Integration\*\* — Modular and extensible chain-based architecture
+ \*\*LangChain Integration\*\* — Modular and extensible chain-based architecture
 
-\- 🖥️ \*\*Streamlit UI\*\* — Clean, interactive web interface — no frontend knowledge needed
+ \*\*Streamlit UI\*\* — Clean, interactive web interface — no frontend knowledge needed
 
-\- 🔒 \*\*Secure\*\* — API keys managed via `.env`, never hardcoded
+ \*\*Secure\*\* — API keys managed via `.env`, never hardcoded
 
 
 
@@ -58,7 +58,7 @@
 
 
 
-\## 🏗️ How It Works
+ How It Works
 
 
 
@@ -70,7 +70,7 @@
 
 &#x20;    ▼
 
-🔤 Text Extraction (PyPDF / LangChain Document Loaders)
+Text Extraction (PyPDF / LangChain Document Loaders)
 
 &#x20;    │
 
@@ -300,7 +300,7 @@ DocuQuery-AI/
 
 
 
-\## 🤝 Contributing
+ Contributing
 
 
 
@@ -324,7 +324,7 @@ Contributions are welcome! Feel free to open issues or submit pull requests.
 
 
 
-\## 📜 License
+ License
 
 
 
@@ -336,7 +336,7 @@ This project is licensed under the MIT License.
 
 
 
-\## 👨‍💻 Author
+ Author
 
 
 
