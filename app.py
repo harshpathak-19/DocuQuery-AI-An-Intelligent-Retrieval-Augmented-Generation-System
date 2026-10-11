@@ -5,16 +5,18 @@ import os
 
 from langchain_community.vectorstores import FAISS
 from langchain_community.embeddings import HuggingFaceEmbeddings
-from langchain_groq import ChatGroq                         
+from langchain_groq import ChatGroq
 from langchain_core.prompts import PromptTemplate
 from langchain_classic.chains.question_answering import load_qa_chain
 from dotenv import load_dotenv
 
 load_dotenv()
 
-
+# Model name can be changed from Streamlit Secrets (GROQ_MODEL) without editing code
+GROQ_MODEL = os.getenv("GROQ_MODEL", "openai/gpt-oss-120b")
 
 hf_embeddings = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
+
 
 def get_pdf_text(pdf_docs):
     text = ""
@@ -24,19 +26,22 @@ def get_pdf_text(pdf_docs):
             text += page.extract_text() or ""
     return text
 
+
 def get_text_chunks(text):
     text_splitter = RecursiveCharacterTextSplitter(chunk_size=1500, chunk_overlap=200)
     chunks = text_splitter.split_text(text)
     return chunks
 
+
 def get_vector_store(text_chunks):
     vector_store = FAISS.from_texts(text_chunks, embedding=hf_embeddings)
     vector_store.save_local("faiss_index")
 
+
 def get_conversational_chain():
     prompt_template = """
-    Answer the question as detailed as possible from the provided context, make sure to provide all the details, 
-    if the answer is not in the provided context, just say "answer is not available in the context", 
+    Answer the question as detailed as possible from the provided context, make sure to provide all the details,
+    if the answer is not in the provided context, just say "answer is not available in the context",
     don't provide wrong information.
 
     Context:\n{context}\n
@@ -44,24 +49,35 @@ def get_conversational_chain():
 
     Answer:
     """
-    model = ChatGroq(model="openai/gpt-oss-120b", api_key=os.getenv("GROQ_API_KEY"), temperature=0.3)
+    model = ChatGroq(
+        model=GROQ_MODEL,
+        api_key=os.getenv("GROQ_API_KEY"),
+        temperature=0.3,
+    )
     prompt = PromptTemplate(template=prompt_template, input_variables=["context", "question"])
     chain = load_qa_chain(model, chain_type="stuff", prompt=prompt)
     return chain
 
+
 def user_input(user_question):
-    new_db = FAISS.load_local("faiss_index", hf_embeddings, allow_dangerous_deserialization=True)
-    docs = new_db.similarity_search(user_question)
+    if not os.path.exists("faiss_index"):
+        st.warning("Pehle sidebar se PDF upload karke 'Submit & Process' karo.")
+        return
+
+    new_db = FAISS.load_local(
+        "faiss_index", hf_embeddings, allow_dangerous_deserialization=True
+    )
+    docs = new_db.similarity_search(user_question, k=4)
 
     chain = get_conversational_chain()
 
     response = chain(
         {"input_documents": docs, "question": user_question},
-        return_only_outputs=True
+        return_only_outputs=True,
     )
 
-    print(response)
     st.write("Reply: ", response["output_text"])
+
 
 def main():
     st.set_page_config(page_title="Chat PDF", layout="centered")
@@ -76,14 +92,24 @@ def main():
         st.title("Menu:")
         pdf_docs = st.file_uploader(
             "Upload your PDF Files and Click on Submit & Process Button",
-            accept_multiple_files=True
+            accept_multiple_files=True,
         )
         if st.button("Submit & Process"):
-            with st.spinner("Processing..."):
-                raw_text = get_pdf_text(pdf_docs)
-                text_chunks = get_text_chunks(raw_text)
-                get_vector_store(text_chunks)
-                st.success("Done Processing!")
+            if not pdf_docs:
+                st.warning("Pehle PDF upload karo.")
+            else:
+                with st.spinner("Processing..."):
+                    raw_text = get_pdf_text(pdf_docs)
+                    text_chunks = get_text_chunks(raw_text)
+                    if not text_chunks:
+                        st.error(
+                            "Is PDF se text nahi nikal paya. Shayad ye scanned/image PDF hai. "
+                            "Koi text-wali PDF try karo."
+                        )
+                    else:
+                        get_vector_store(text_chunks)
+                        st.success("Done Processing!")
+
 
 if __name__ == "__main__":
     main()
