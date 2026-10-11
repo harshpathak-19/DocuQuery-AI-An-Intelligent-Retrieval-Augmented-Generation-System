@@ -61,7 +61,7 @@ def get_conversational_chain():
 
 def user_input(user_question):
     if not os.path.exists("faiss_index"):
-        st.warning("Pehle sidebar se PDF upload karke 'Submit & Process' karo.")
+        st.warning("Upload the PDF from sidebar and press 'Submit & Process'.")
         return
 
     new_db = FAISS.load_local(
@@ -96,15 +96,15 @@ def main():
         )
         if st.button("Submit & Process"):
             if not pdf_docs:
-                st.warning("Pehle PDF upload karo.")
+                st.warning("Upload the PDF first.")
             else:
                 with st.spinner("Processing..."):
                     raw_text = get_pdf_text(pdf_docs)
                     text_chunks = get_text_chunks(raw_text)
                     if not text_chunks:
                         st.error(
-                            "Is PDF se text nahi nikal paya. Shayad ye scanned/image PDF hai. "
-                            "Koi text-wali PDF try karo."
+                            "From this PDF text is not available , don't use scanned PDF. "
+                            "Try new PDF with text."
                         )
                     else:
                         get_vector_store(text_chunks)
